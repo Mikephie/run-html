@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebDAV 音乐播放器 (PikPak 测试)</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f8f8f8; }
+        input, button { padding: 8px; margin: 5px 0; display: block; width: 300px; box-sizing: border-box; }
+        h1, h2 { color: #333; }
+        #audioPlayer { margin-top: 15px; }
+        
+        #playlist { 
+            list-style: none; 
+            padding: 0; 
+            margin-top: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            background-color: #fff;
+        }
+        .file-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+            word-wrap: break-word;
+        }
+        .file-item:last-child {
+            border-bottom: none;
+        }
+        .file-item:hover {
+            background-color: #e9e9e9;
+        }
+        .file-item.active {
+            background-color: #d1e7ff;
+            color: #004085;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>WebDAV 音乐播放器</h1>
+
+    <label for="url">WebDAV 地址 (URL):</label>
+    <input type="text" id="url" value="https://dav.mypikpak.com/我的音乐" placeholder="请输入 WebDAV 服务器地址">
+
+    <label for="username">用户名/令牌 ID:</label>
+    <input type="text" id="username" value="gwnn" placeholder="请输入用户名/令牌 ID">
+
+    <label for="password">密码/应用令牌:</label>
+    <input type="password" id="password" value="jgfhiyd" placeholder="请输入密码/应用令牌">
+
+    <button onclick="connectWebDAV()">连接并获取文件列表</button>
+
+    <h2>播放控制</h2>
+    <audio id="audioPlayer" controls style="width: 300px;"></audio>
+    <p>当前播放: <span id="currentTrackName">--</span></p>
+
+    <h2>播放列表</h2>
+    <ul id="playlist">
+        <li>请先连接 WebDAV...</li>
+    </ul>
+    
+    <script>
+        // 播放列表数据：存储从 WebDAV 获取的所有音频文件对象
+        let globalPlaylist = [];
+        let currentTrackIndex = -1;
+        const audioPlayer = document.getElementById('audioPlayer');
+
+        // WebDAV 的 PROPFIND XML 请求体
+        const propfindXmlBody = `<?xml version="1.0" encoding="utf-8" ?>
+<D:propfind xmlns:D="DAV:">
+  <D:prop>
+    <D:displayname/>
+    <D:getcontentlength/>
+    <D:getlastmodified/>
+    <D:resourcetype/>
+  </D:prop>
+</D:propfind>`;
+        
+        // --- 核心播放逻辑 ---
+
+        /**
+         * 加载并播放选中的曲目。
+         * @param {object} fileObject - 包含 name, url, authHeader 的文件对象。
+         * @param {number} index - 在 globalPlaylist 中的索引。
+         */
+        async function loadAndPlay(fileObject, index) {
+            const currentTrackName = document.getElementById('currentTrackName');
+            
+            // 标记当前播放索引
+            currentTrackIndex = index;
+
+            // 更新 UI
+            currentTrackName.textContent = fileObject.name;
+            updatePlaylistUI(index);
+
+            try {
+                // 使用 Fetch API 发送带认证头部的 GET 请求
+                const response = await fetch(fileObject.url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': fileObject.authHeader,
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`无法获取音频流: HTTP ${response.status}`);
+                }
+
+                // 将音频数据转换为 Blob 并创建 Blob URL
+                const audioBlob = await response.blob();
+                
+                // 释放旧的 Blob URL 内存（如果有），避免内存泄漏
+                if (audioPlayer.src.startsWith('blob:')) {
+                    URL.revokeObjectURL(audioPlayer.src);
+                }
+
+                const blobUrl = URL.createObjectURL(audioBlob);
+                
+                // 设置 src 并播放
+                audioPlayer.src = blobUrl;
+                audioPlayer.load();
+                await audioPlayer.play();
+                
+                console.log(`正在播放: ${fileObject.name}`);
+
+            } catch (error) {
+                console.error("播放失败:", error);
+                // 如果是用户点击播放失败，给用户提示
+                if (index === currentTrackIndex) { 
+                    alert(`播放 ${fileObject.name} 失败: ${error.message}。请检查 CORS/认证是否正确。`);
+                }
+                // 自动播放下一首 (如果播放失败且不是最后一首)
+                if (currentTrackIndex < globalPlaylist.length - 1) {
+                    playNext(); 
+                }
+            }
+        }
+        
+        /** 顺序播放逻辑：切换到列表中的下一首。 */
+        function playNext() {
+            if (globalPlaylist.length === 0) return;
+
+            const nextIndex = (currentTrackIndex + 1) % globalPlaylist.length; // 循环播放
+            
+            // 如果不想循环，可以改为: 
+            // const nextIndex = currentTrackIndex + 1; 
+            // if (nextIndex >= globalPlaylist.length) return; 
+
+            loadAndPlay(globalPlaylist[nextIndex], nextIndex);
+        }
+
+        // 监听音频结束事件，实现自动下一首
+        audioPlayer.addEventListener('ended', playNext);
+        
+        // --- UI 更新逻辑 ---
+
+        /** * 更新列表选中状态。
+         * @param {number} activeIndex - 当前播放曲目的索引。
+         */
+        function updatePlaylistUI(activeIndex) {
+            const listItems = document.querySelectorAll('#playlist li');
+            listItems.forEach((item, index) => {
+                item.classList.remove('active');
+                if (index === activeIndex) {
+                    item.classList.add('active');
+                    // 滚动到当前播放项
+                    item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            });
+        }
+        
+        /** 渲染播放列表。 */
+        function renderPlaylist() {
+            const playlistUl = document.getElementById('playlist');
+            playlistUl.innerHTML = ''; // 清空列表
+
+            if (globalPlaylist.length === 0) {
+                 playlistUl.innerHTML = '<li>未找到音频文件。</li>';
+                 return;
+            }
+
+            globalPlaylist.forEach((file, index) => {
+                const li = document.createElement('li');
+                li.className = 'file-item';
+                li.textContent = file.name;
+                li.title = file.name;
+                
+                // 绑定点击事件：点击时加载并播放该曲目
+                li.onclick = () => {
+                    loadAndPlay(file, index);
+                };
+                
+                playlistUl.appendChild(li);
+            });
+            
+            // 默认自动播放第一首
+            // loadAndPlay(globalPlaylist[0], 0); 
+        }
+
+        // --- WebDAV 连接和解析逻辑 ---
+        
+        /** 连接 WebDAV 并获取文件列表。 */
+        async function connectWebDAV() {
+            let baseUrl = document.getElementById('url').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const playlistUl = document.getElementById('playlist');
+
+            playlistUl.innerHTML = '<li>正在尝试连接 WebDAV...</li>';
+            globalPlaylist = []; 
+            currentTrackIndex = -1;
+
+            // 确保 baseUrl 以 / 结尾，以便后续的 URL 构造正确
+            if (!baseUrl.endsWith('/')) {
+                baseUrl += '/';
+            }
+
+            // 1. 构造 Basic 身份验证头部
+            const authString = btoa(`${username}:${password}`);
+            
+            // 对 PROPFIND 请求的 URL 中的路径进行编码，解决中文路径问题
+            const urlParts = new URL(baseUrl);
+            const encodedPathname = urlParts.pathname.split('/').map(segment => encodeURIComponent(segment)).join('/');
+            const encodedUrl = urlParts.origin + encodedPathname;
+            
+            try {
+                const response = await fetch(encodedUrl, {
+                    method: 'PROPFIND',
+                    headers: {
+                        'Authorization': `Basic ${authString}`,
+                        'Content-Type': 'text/xml; charset=utf-8',
+                        'Depth': '1' // 只获取当前目录
+                    },
+                    body: propfindXmlBody
+                });
+
+                if (response.status !== 207) {
+                    throw new Error(`连接失败: HTTP 状态码 ${response.status} (认证或服务器错误)`);
+                }
+
+                const xmlText = await response.text();
+                
+                // 2. 解析 XML 并获取文件列表
+                globalPlaylist = parseWebDAVResponse(xmlText, baseUrl, authString);
+
+                // 3. 渲染列表
+                renderPlaylist();
+
+            } catch (error) {
+                // 处理 CORS/网络错误
+                let errorMessage = error.message;
+                if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+                    errorMessage = "网络/CORS 错误：请检查 WebDAV 服务器是否开启了 CORS 支持，并且允许 PROPFIND 方法。";
+                }
+                playlistUl.innerHTML = `<li>连接失败: ${errorMessage}</li>`;
+                console.error("WebDAV Error:", error);
+            }
+        }
+
+        /** * 解析 XML 响应，提取音频文件，并支持中文解码。
+         * @param {string} xmlText - PROPFIND 响应的 XML 文本。
+         * @param {string} baseUrl - WebDAV 基础 URL。
+         * @param {string} authHeader - 包含 Basic 认证的字符串。
+         */
+        function parseWebDAVResponse(xmlText, baseUrl, authHeader) {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+            const responses = xmlDoc.getElementsByTagNameNS("DAV:", "response");
+            const files = [];
+
+            for (let i = 0; i < responses.length; i++) {
+                const response = responses[i];
+                const hrefElement = response.getElementsByTagNameNS("DAV:", "href")[0];
+                const propstat = response.getElementsByTagNameNS("DAV:", "propstat")[0];
+
+                if (hrefElement && propstat) {
+                    const relativePathEncoded = hrefElement.textContent;
+                    
+                    // 解码路径，支持中文文件名显示
+                    // 注意：这里需要处理 WebDAV 路径可能带斜杠的情况
+                    const relativePath = decodeURIComponent(relativePathEncoded.replace(/^\//, '')); 
+                    
+                    const resourceType = propstat.getElementsByTagNameNS("DAV:", "resourcetype")[0];
+                    const isCollection = resourceType && resourceType.getElementsByTagNameNS("DAV:", "collection").length > 0;
+
+                    // 检查是否为音频文件（MP3, FLAC, WAV 等）
+                    if (!isCollection && relativePath.toLowerCase().match(/\.(mp3|flac|wav|ogg|m4a|aac)$/)) {
+                        
+                        // 构造完整的 GET 请求 URL。
+                        // 由于 baseUrl 已经以 / 结尾，这里直接拼接
+                        const fullUrl = new URL(relativePathEncoded, baseUrl).href;
+
+                        files.push({
+                            name: relativePath.split('/').pop(),
+                            url: fullUrl,
+                            authHeader: authHeader
+                        });
+                    }
+                }
+            }
+            return files;
+        }
+
+    </script>
+
+</body>
+</html>
