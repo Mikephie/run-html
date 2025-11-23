@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的私人导航 - 资源 & 工具</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <span class="logo-icon">🚀</span>
+            <span class="logo-text">我的导航</span>
+        </div>
+        <nav class="nav-menu">
+            <a href="#ai-tools" class="nav-link active">
+                <span class="nav-icon">🤖</span>
+                <span class="nav-text">AI Tools</span>
+            </a>
+            <a href="#github" class="nav-link">
+                <span class="nav-icon">💻</span>
+                <span class="nav-text">Github</span>
+            </a>
+            <a href="#video" class="nav-link">
+                <span class="nav-icon">🎬</span>
+                <span class="nav-text">影视娱乐</span>
+            </a>
+            <a href="#download" class="nav-link">
+                <span class="nav-icon">📥</span>
+                <span class="nav-text">资源下载</span>
+            </a>
+            <a href="#tools" class="nav-link">
+                <span class="nav-icon">🛠️</span>
+                <span class="nav-text">在线工具</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- 移动端菜单按钮 -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <header class="page-header">
+            <h1 class="page-title">欢迎回来</h1>
+            <p class="page-subtitle">快速访问你的常用资源</p>
+        </header>
+
+        <!-- AI Tools 区域 -->
+        <section id="ai-tools" class="content-section">
+            <h2 class="section-title">
+                <span class="title-icon">🤖</span>
+                AI Tools
+            </h2>
+            <div class="card-grid">
+                <a href="https://chatgpt.com/" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #10a37f 0%, #1a7f64 100%);">
+                        <span>C</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">ChatGPT</div>
+                        <div class="card-desc">OpenAI 智能助手</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <a href="https://claude.ai/login?returnTo=%2F%3F" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #D97757 0%, #C1603D 100%);">
+                        <span>C</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Claude</div>
+                        <div class="card-desc">Anthropic AI 助手</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+                
+                <a href="https://gemini.google.com/u/1/app/1a4952b7feba9fc9" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #4285f4 0%, #34a853 50%, #fbbc05 100%);">
+                        <span>G</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Gemini</div>
+                        <div class="card-desc">Google AI 模型</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <a href="https://aistudio.google.com/u/1/apps?source=user" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #ea4335 0%, #fbbc05 100%);">
+                        <span>A</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Google AI Studio</div>
+                        <div class="card-desc">AI 开发平台</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <a href="https://dash.cloudflare.com/e03c75051f31f8b19a3664fb5dfa7402/home/domains" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #f38020 0%, #f6821f 100%);">
+                        <span>☁️</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Cloudflare</div>
+                        <div class="card-desc">域名管理</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <a href="https://dash.cloudflare.com/e03c75051f31f8b19a3664fb5dfa7402/r2/overview" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #f38020 0%, #d96b18 100%);">
+                        <span>R2</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Cloudflare R2</div>
+                        <div class="card-desc">对象存储</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Github 区域 -->
+        <section id="github" class="content-section">
+            <h2 class="section-title">
+                <span class="title-icon">💻</span>
+                Github
+            </h2>
+            <div class="card-grid">
+                <a href="https://gist.github.com/Mikephie" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #24292e 0%, #1a1e22 100%);">
+                        <span>📝</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Gist</div>
+                        <div class="card-desc">代码片段</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <a href="https://github.com/Mikephie/ijs" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #5c6bc0 0%, #3f51b5 100%);">
+                        <span>JS</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">IJS</div>
+                        <div class="card-desc">个人JS库</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <a href="https://icon.mikephie.com/" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #ab47bc 0%, #8e24aa 100%);">
+                        <span>🎨</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Icon</div>
+                        <div class="card-desc">图标上传</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <a href="https://mikephie.github.io/iMusic/" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #ec407a 0%, #d81b60 100%);">
+                        <span>🎵</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">iMusic</div>
+                        <div class="card-desc">音乐播放</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <a href="https://github.com/Mikephie/Script" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);">
+                        <span>📜</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Script</div>
+                        <div class="card-desc">个人脚本</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <a href="https://github.com/Mikephie/Task" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #26a69a 0%, #00897b 100%);">
+                        <span>✅</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Task</div>
+                        <div class="card-desc">任务管理</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+            </div>
+        </section>
+            
+        <!-- 影视娱乐区域 -->
+        <section id="video" class="content-section">
+            <h2 class="section-title">
+                <span class="title-icon">🎬</span>
+                影视娱乐
+            </h2>
+            <div class="card-grid">
+                <a href="https://imovie.mikephie.com/" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);">
+                        <span>📺</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">OmniBox</div>
+                        <div class="card-desc">在线观影</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+                
+                <a href="https://imovie.mikephie.site/" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);">
+                        <span>🌙</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">LunaTV Enhanced</div>
+                        <div class="card-desc">视频平台</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+                
+                <a href="https://www.youtube.com" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);">
+                        <span>▶️</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">YouTube</div>
+                        <div class="card-desc">视频分享</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+                
+                <a href="https://netflix.com" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #e50914 0%, #b20710 100%);">
+                        <span>N</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Netflix</div>
+                        <div class="card-desc">流媒体平台</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <a href="https://www.disneyplus.com/en-sg" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #113ccf 0%, #0d2d9e 100%);">
+                        <span>D+</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">Disney+</div>
+                        <div class="card-desc">迪士尼流媒体</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <a href="https://ddys.art/" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <span>低</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">低端影视</div>
+                        <div class="card-desc">高质量影视</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 资源下载区域 -->
+        <section id="download" class="content-section">
+            <h2 class="section-title">
+                <span class="title-icon">📥</span>
+                资源下载
+            </h2>
+            <div class="card-grid">
+                <a href="https://pan.baidu.com" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #2932e1 0%, #1e25b0 100%);">
+                        <span>☁️</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">百度网盘</div>
+                        <div class="card-desc">云存储</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <a href="https://www.zhuiying.site/" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <span>🔍</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">追影</div>
+                        <div class="card-desc">资源搜索</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 在线工具区域 -->
+        <section id="tools" class="content-section">
+            <h2 class="section-title">
+                <span class="title-icon">🛠️</span>
+                在线工具
+            </h2>
+            <div class="card-grid">
+                <a href="https://chatgpt.com" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #10a37f 0%, #1a7f64 100%);">
+                        <span>🤖</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">ChatGPT</div>
+                        <div class="card-desc">AI 助手</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <a href="https://smallpdf.com/cn" target="_blank" class="card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #ff6347 0%, #ff4500 100%);">
+                        <span>📄</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">SmallPDF</div>
+                        <div class="card-desc">PDF处理</div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+            </div>
+        </section>
+        
+        <footer class="page-footer">
+            <p>© 2025 My Personal Navigation. Made with ❤️</p>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
